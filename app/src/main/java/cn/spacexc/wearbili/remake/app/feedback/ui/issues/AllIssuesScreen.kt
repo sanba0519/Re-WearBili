@@ -39,7 +39,7 @@ fun AllIssuesScreen(viewModel: AllIssuesViewModel = hiltViewModel(), navControll
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 8.dp)
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = titleHeight)
         ) {
             items(items.itemCount) {
                 items[it]?.let { item ->

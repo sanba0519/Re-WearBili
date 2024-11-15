@@ -129,6 +129,7 @@ class MainActivity : ComponentActivity() {
                         val rotation by wearBiliAnimateFloatAsState(targetValue = if (isRotated) 90f else 0f)
                         val height by wearBiliAnimateDpAsState(targetValue = if (isRotated) screenSize.width else screenSize.height)
                         val width by wearBiliAnimateDpAsState(targetValue = if (isRotated) screenSize.height else screenSize.width)
+
                         Box(
                             modifier = Modifier
                                 .requiredSizeIn(
@@ -138,6 +139,7 @@ class MainActivity : ComponentActivity() {
                                 .rotate(rotation)
                                 .size(width, height)
                                 .align(Alignment.Center)
+
                         ) {
                             val navController = rememberNavController()
                             val configuration = LocalConfiguration.current

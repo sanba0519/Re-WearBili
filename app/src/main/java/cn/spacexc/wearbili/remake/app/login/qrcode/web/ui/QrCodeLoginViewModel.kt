@@ -37,6 +37,8 @@ class QrCodeLoginViewModel @Inject constructor(
         )
     )
 
+    var currentCode: String? by mutableStateOf(null)
+
     suspend fun startLogin(onFinishedLogin: () -> Unit) {
         screenState = screenState.copy(currentLoginStatus = QrCodeLoginStatus.Loading)
         //val qrCode = networkUtils.get<QrCode>("https://passport.bilibili.com/qrcode/getLoginUrl")
@@ -66,7 +68,7 @@ class QrCodeLoginViewModel @Inject constructor(
             }
             authState.data.logd()
             if (authState.data?.data?.refreshToken.isNullOrEmpty()) {
-                when (authState.data?.code) {
+                when (authState.data?.data?.code) {
                     QrCodeLoginStatus.Pending.code -> {
                         screenState =
                             screenState.copy(currentLoginStatus = QrCodeLoginStatus.Pending)

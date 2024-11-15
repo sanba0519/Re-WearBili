@@ -63,6 +63,7 @@ fun ScaleAdjustingScreen(navController: NavController) {
                     horizontal = titleBackgroundHorizontalPadding(),
                     vertical = titleBackgroundHorizontalPadding()
                 )
+                .padding(top = titleHeight)
         ) {
             Text(
                 text = "缩放调整",

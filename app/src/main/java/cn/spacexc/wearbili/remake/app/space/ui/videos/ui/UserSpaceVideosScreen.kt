@@ -25,6 +25,7 @@ import cn.spacexc.wearbili.remake.app.video.info.ui.VIDEO_TYPE_BVID
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.LoadingTip
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.VideoCardWithNoBorder
 import cn.spacexc.wearbili.remake.common.ui.isRound
 import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
@@ -33,7 +34,7 @@ import cn.spacexc.wearbili.remake.common.ui.toLoadingState
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun UserSpaceVideosScreen(
+fun TitleBackgroundScope.UserSpaceVideosScreen(
     pagingItems: Flow<PagingData<Item>>,
     viewModel: UserSpaceViewModel,
     listState: LazyListState,
@@ -44,7 +45,7 @@ fun UserSpaceVideosScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                vertical = 6.dp,
+                vertical = 6.dp + titleHeight,
                 horizontal = titleBackgroundHorizontalPadding() - 3.dp
             ),
             verticalArrangement = Arrangement.spacedBy(6.dp),

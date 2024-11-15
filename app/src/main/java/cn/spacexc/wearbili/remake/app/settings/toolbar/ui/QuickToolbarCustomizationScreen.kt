@@ -202,7 +202,8 @@ fun QuickToolbarCustomizationScreen(navController: NavController) {
                 .padding(
                     horizontal = titleBackgroundHorizontalPadding(),
                     vertical = if (isRound()) titleBackgroundHorizontalPadding() else 4.dp
-                ),
+                )
+                .padding(top = titleHeight),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Column(

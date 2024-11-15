@@ -15,11 +15,9 @@ import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentScreen
 import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentViewModel
 import cn.spacexc.wearbili.remake.app.video.info.info.ui.VideoBasicInformationScreen
 import cn.spacexc.wearbili.remake.app.video.info.info.ui.VideoInformationViewModel
-import cn.spacexc.wearbili.remake.app.video.info.info.ui.v2.VideoInformationScreenNew
 import cn.spacexc.wearbili.remake.app.video.info.related.RelatedVideosScreen
 import cn.spacexc.wearbili.remake.common.UIState
 import cn.spacexc.wearbili.remake.common.ui.TitleBackground
-import cn.spacexc.wearbili.remake.common.ui.isRound
 
 /**
  * Created by XC-Qan on 2023/4/12.
@@ -88,39 +86,47 @@ fun SharedTransitionScope.VideoInformationScreen(
     ) {
         HorizontalPager(state = state) {
             when (it) {
-                0 -> if (isRound()) {
-                    VideoBasicInformationScreen(
-                        state = videoInformationViewModel.state,
-                        navController = navController,
-                        videoInformationViewModel = videoInformationViewModel,
-                        videoIdType = videoIdType, videoId = videoId
-                    ) {
+                0 -> VideoBasicInformationScreen(
+                    state = videoInformationViewModel.state,
+                    navController = navController,
+                    videoInformationViewModel = videoInformationViewModel,
+                    videoIdType = videoIdType, videoId = videoId
+                ) {
 
-                    }
-                } else {
-                    VideoInformationScreenNew(
-                        state = videoInformationViewModel.state,
-                        navController = navController,
-                        videoInformationViewModel = videoInformationViewModel,
-                        videoIdType = videoIdType,
-                        videoId = videoId,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        videoPlayerViewModel = ijkVideoPlayerViewModel,
-                        onRetry = {
-                            videoInformationViewModel.getVideoInfo(
+                }
+                /*if (isRound()) {
+                VideoBasicInformationScreen(
+                    state = videoInformationViewModel.state,
+                    navController = navController,
+                    videoInformationViewModel = videoInformationViewModel,
+                    videoIdType = videoIdType, videoId = videoId
+                ) {
+
+                }
+            } else {
+                VideoInformationScreenNew(
+                    state = videoInformationViewModel.state,
+                    navController = navController,
+                    videoInformationViewModel = videoInformationViewModel,
+                    videoIdType = videoIdType,
+                    videoId = videoId,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    videoPlayerViewModel = ijkVideoPlayerViewModel,
+                    onRetry = {
+                        videoInformationViewModel.getVideoInfo(
+                            videoIdType,
+                            videoId,
+                            navController
+                        ) { cid ->
+                            ijkVideoPlayerViewModel.playVideoFromId(
                                 videoIdType,
                                 videoId,
-                                navController
-                            ) { cid ->
-                                ijkVideoPlayerViewModel.playVideoFromId(
-                                    videoIdType,
-                                    videoId,
-                                    cid
-                                )
-                            }
+                                cid
+                            )
                         }
-                    )
-                }
+                    }
+                )
+            }*/
 
                 1 -> {
                     CommentScreen(
@@ -132,7 +138,8 @@ fun SharedTransitionScope.VideoInformationScreen(
                         uploaderMid = videoInformationViewModel.state.videoData?.view?.owner?.mid
                             ?: 0,
                         navController = navController,
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        titleBackgroundScope = this@TitleBackground
                     )
                 }
 

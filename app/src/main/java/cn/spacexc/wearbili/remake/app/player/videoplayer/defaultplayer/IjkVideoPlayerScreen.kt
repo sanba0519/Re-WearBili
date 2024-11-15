@@ -501,7 +501,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                                 p1: Int,
                                 p2: Int
                             ) {
-                                viewModel.httpPlayer.setSurface(Surface(texture))
+                                viewModel
                                 viewModel.cachePlayer.setSurface(Surface(texture))
                             }
 
@@ -530,7 +530,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                     AndroidView(factory = { SurfaceView(it) }) { surfaceView ->
                         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                             override fun surfaceCreated(holder: SurfaceHolder) {
-                                viewModel.httpPlayer.setDisplay(holder)
+                                viewModel.httpPlayer.
                                 viewModel.cachePlayer.setDisplay(holder)
                             }
 
@@ -564,7 +564,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                     if (isCacheVideo) {
                         if (viewModel.cachePlayer.isPlaying) viewModel.cachePlayer.pause() else viewModel.cachePlayer.start()
                     } else {
-                        if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.start()
+                        if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.play()
                     }
                 })
             }
@@ -902,7 +902,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                                                                     if (isCacheVideo) {
                                                                         if (viewModel.cachePlayer.isPlaying) viewModel.cachePlayer.pause() else viewModel.cachePlayer.start()
                                                                     } else {
-                                                                        if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.start()
+                                                                        if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.play()
                                                                     }
                                                                 }
                                                                 .size(18.dp)
@@ -1110,7 +1110,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                                                             if (isCacheVideo) {
                                                                 if (viewModel.cachePlayer.isPlaying) viewModel.cachePlayer.pause() else viewModel.cachePlayer.start()
                                                             } else {
-                                                                if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.start()
+                                                                if (viewModel.httpPlayer.isPlaying) viewModel.httpPlayer.pause() else viewModel.httpPlayer.play()
                                                             }
                                                         }
                                                         .size(18.dp)
@@ -1412,7 +1412,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                                         text = i.toFloat().div(100).toString() + "x",
                                         isSelected = playBackSpeed == i
                                     ) {
-                                        viewModel.httpPlayer.setSpeed(i.toFloat().div(100))
+                                        viewModel.httpPlayer.setPlaybackSpeed(i.toFloat().div(100))
                                         playBackSpeed = i
                                         //danmakuCanvasState.timer.setSpeed(i / 100f)
                                     }
@@ -1422,7 +1422,7 @@ fun SharedTransitionScope.IjkVideoPlayerScreen(
                                         text = i.toFloat().div(100).toString() + "x",
                                         isSelected = playBackSpeed == i
                                     ) {
-                                        viewModel.httpPlayer.setSpeed(i.toFloat().div(100))
+                                        viewModel.httpPlayer.setPlaybackSpeed(i.toFloat().div(100))
                                         playBackSpeed = i
                                         //danmakuCanvasState.timer.setSpeed(i / 100f)
                                     }

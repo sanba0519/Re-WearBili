@@ -62,7 +62,8 @@ fun ExperimentalFunctionsScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = titleBackgroundHorizontalPadding(), vertical = 8.dp),
+                .padding(horizontal = titleBackgroundHorizontalPadding(), vertical = 8.dp)
+                .padding(top = titleHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {

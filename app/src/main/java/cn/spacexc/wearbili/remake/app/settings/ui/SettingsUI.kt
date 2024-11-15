@@ -76,7 +76,8 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = titleBackgroundHorizontalPadding()),
+                .padding(horizontal = titleBackgroundHorizontalPadding())
+                .padding(top = titleHeight),
             horizontalAlignment = if (isRound()) Alignment.CenterHorizontally else Alignment.Start
         ) {
             Text(

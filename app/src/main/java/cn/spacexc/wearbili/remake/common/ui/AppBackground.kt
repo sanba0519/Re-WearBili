@@ -56,10 +56,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -70,6 +74,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -303,6 +308,13 @@ fun CirclesBackground(
     }
 }
 
+
+interface TitleScope {
+    val titleHeight: Dp
+}
+
+interface TitleBackgroundScope : TitleScope, BoxScope
+
 @Composable
 fun LoadableBox(
     modifier: Modifier = Modifier,
@@ -395,6 +407,100 @@ fun LoadableBox(
 }
 
 @Composable
+fun TitleBackgroundScope.LoadableBox(
+    modifier: Modifier = Modifier,
+    uiState: UIState,
+    onLongClick: () -> Unit = {},
+    onRetry: () -> Unit,
+    content: @Composable TitleBackgroundScope.() -> Unit
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val breathingOffset by infiniteTransition.animateFloat(
+        initialValue = 10f,
+        targetValue = -10f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(easing = EaseInOutCubic, durationMillis = 1000),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = ""
+    )
+    Box(modifier = modifier.fillMaxSize()) {
+        Crossfade(targetState = uiState, label = "AppBackgroundLoadableBox") {
+            when (it) {
+                is UIState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickVfx(onLongClick = onLongClick),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .offset(y = this@LoadableBox.titleHeight / 2)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.img_loading_2233),
+                                contentDescription = "Loading...",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .offset {
+                                        IntOffset(x = 0, y = breathingOffset.toInt())
+                                    }
+                                //.fillMaxWidth(0.3f)
+                                //.aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(text = "玩命加载中", textAlign = TextAlign.Center)
+                        }
+                    }
+                }
+
+                is UIState.Success -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        this@LoadableBox.content()
+                    }
+                }
+
+                is UIState.Failed -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .offset(y = this@LoadableBox.titleHeight)
+                            .clickVfx(onLongClick = onLongClick),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .clickVfx(onLongClick = onLongClick, onClick = onRetry)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.img_loading_2233_error),
+                                contentDescription = "Load Failed",
+                                modifier = Modifier.fillMaxWidth()
+                                //.fillMaxWidth(0.3f)
+                                //.aspectRatio(1f)
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = uiState.errorMessage ?: "加载失败啦",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun titleBackgroundHorizontalPadding() = if (isRound()) 24.dp else 12.dp
 
 @Composable
@@ -416,13 +522,18 @@ fun TitleBackground(
     onRetry: () -> Unit,
     currentPageIndex: Int? = null,
     navController: NavController?,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable TitleBackgroundScope.() -> Unit
 ) {
     val timeSource = DefaultTimeSource("HH:mm")
     val timeText = timeSource.currentTime
+    val localDensity = LocalDensity.current
 
     var isBackClicked by remember {
         mutableStateOf(false)
+    }
+
+    var titleHeight by remember {
+        mutableStateOf(0.dp)
     }
 
     CirclesBackground(
@@ -434,9 +545,48 @@ fun TitleBackground(
         ambientAlpha = ambientAlpha,
         onRetry = onRetry
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    //.weight(1f)
+                    .apply {
+                        if (isTitleClipToBounds) clipToBounds()
+                    }
+                    .graphicsLayer {
+                        compositingStrategy =
+                            CompositingStrategy.Offscreen
+                    }
+                    .drawWithContent {
+                        val titleHeightPx = titleHeight.toPx()
+                        drawContent()
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                0f to Color(0, 0, 0, 40),
+                                titleHeightPx / size.height * 1.2f to Color.Black
+                            ),
+                            blendMode = BlendMode.DstIn,
+                        )
+                        //drawContent()
+                    }
+            ) {
+                val titleBackgroundScope =
+                    object : TitleScope, BoxScope by this, TitleBackgroundScope {
+                        override val titleHeight: Dp
+                            get() = titleHeight
+                    }
+
+                titleBackgroundScope.content()
+            }
             Row(
                 modifier = Modifier
+                    .onSizeChanged {
+                        titleHeight = with(localDensity) { it.height.toDp() }
+                    }
+                    .graphicsLayer {
+                        compositingStrategy =
+                            CompositingStrategy.Offscreen
+                    }
                     .alpha(titleAlpha)
                     .padding(
                         horizontal = titleBackgroundHorizontalPadding(),
@@ -633,16 +783,6 @@ fun TitleBackground(
                     )
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    //.weight(1f)
-                    .apply {
-                        if (isTitleClipToBounds) clipToBounds()
-                    }
-            ) {
-                content()
-            }
         }
     }
 }
@@ -666,7 +806,7 @@ fun TitleBackground(
     onRetry: () -> Unit = {},
     currentPageIndex: Int? = null,
     navController: NavController,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable TitleBackgroundScope.() -> Unit
 ) {
     ProvideConfiguration {
         var currentColor by remember {

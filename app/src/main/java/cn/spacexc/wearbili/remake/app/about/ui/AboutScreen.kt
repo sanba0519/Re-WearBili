@@ -1,6 +1,5 @@
 package cn.spacexc.wearbili.remake.app.about.ui
 
-import android.app.Activity
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
@@ -65,7 +64,7 @@ import kotlin.math.cos
 object AboutScreen
 
 @Composable
-fun Activity.AboutScreen(
+fun AboutScreen(
     navController: NavController
 ) {
     ProvideConfiguration {
@@ -115,13 +114,14 @@ fun Activity.AboutScreen(
             navController = navController,
             title = if (isTitleVisible) "" else "关于软件",
             onBack = navController::navigateUp,
-            onRetry = {}) {
+            onRetry = {}
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = if (isRound()) Alignment.CenterHorizontally else Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(
-                    vertical = 6.dp, horizontal = titleBackgroundHorizontalPadding()
+                    vertical = 6.dp + titleHeight, horizontal = titleBackgroundHorizontalPadding()
                 ),
                 state = state
             ) {

@@ -45,6 +45,4 @@ fun UserInformationScreen(
             }
         }
     }
-    //}
-
 }

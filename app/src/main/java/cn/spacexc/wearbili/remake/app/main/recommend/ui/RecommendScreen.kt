@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -54,6 +53,7 @@ import cn.spacexc.wearbili.remake.app.settings.LocalConfiguration
 import cn.spacexc.wearbili.remake.app.settings.SettingsManager
 import cn.spacexc.wearbili.remake.app.settings.experimantal.EXPERIMENTAL_LARGE_VIDEO_CARD
 import cn.spacexc.wearbili.remake.app.settings.experimantal.getActivatedExperimentalFunctions
+import cn.spacexc.wearbili.remake.app.settings.toolbar.ui.QuickToolbarCustomizationScreen
 import cn.spacexc.wearbili.remake.app.settings.toolbar.ui.StaticFunctionSlot
 import cn.spacexc.wearbili.remake.app.settings.toolbar.ui.functionList
 import cn.spacexc.wearbili.remake.app.settings.toolbar.ui.toFunctionDetail
@@ -67,9 +67,9 @@ import cn.spacexc.wearbili.remake.common.ui.BilibiliPink
 import cn.spacexc.wearbili.remake.common.ui.Card
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.LoadingTip
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.VideoCard
 import cn.spacexc.wearbili.remake.common.ui.isRound
-import cn.spacexc.wearbili.remake.common.ui.lazyRotateInput
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
 import cn.spacexc.wearbili.remake.common.ui.wearBiliAnimateContentPlacement
 import cn.spacexc.wearbili.remake.proto.settings.AppConfiguration
@@ -95,14 +95,13 @@ data class RecommendScreenState(
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun RecommendScreen(
+fun TitleBackgroundScope.RecommendScreen(
     viewModel: RecommendViewModel,
     navController: NavController,
     updatesResult: Version?,
     onFetch: (isRefresh: Boolean) -> Unit
 ) {
     val state = viewModel.screenState
-    val focusRequester = remember { FocusRequester() }
     val pullRefreshState =
         rememberPullRefreshState(refreshing = state.isRefreshing, onRefresh = {
             onFetch(true)
@@ -125,13 +124,12 @@ fun RecommendScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .lazyRotateInput(focusRequester, state.scrollState),
+                .fillMaxSize(),
             contentPadding = PaddingValues(
                 start = titleBackgroundHorizontalPadding(),
                 end = titleBackgroundHorizontalPadding(),
                 bottom = 6.dp,
-                top = if (isRound()) 8.dp else 0.dp
+                top = if (isRound()) 8.dp else 0.dp + titleHeight
             ),
             state = state.scrollState
         ) {
@@ -221,9 +219,6 @@ fun RecommendScreen(
                 }
             }
         }
-        LaunchedEffect(key1 = Unit, block = {
-            focusRequester.requestFocus()
-        })
         PullRefreshIndicator(
             refreshing = state.isRefreshing, state = pullRefreshState,
             modifier = Modifier.align(
@@ -279,12 +274,7 @@ fun LazyItemScope.QuickToolBar(
                         horizontal = 8.dp
                     ),
                     onClick = {
-                        /*context.startActivity(
-                            Intent(
-                                context,
-                                QuickToolbarCustomizationActivity::class.java
-                            )
-                        )*/
+                        navController.navigate(QuickToolbarCustomizationScreen)
                     }
                 ) {
                     Row(
@@ -299,7 +289,7 @@ fun LazyItemScope.QuickToolBar(
                             imageVector = Icons.Outlined.PushPin,
                             contentDescription = null,
                             tint = BilibiliPink,
-                            modifier = Modifier.rotate(32.1f)//.size(textHeight * 0.45f)
+                            modifier = Modifier.rotate(32.1f)   //我检查一下是谁看见这个magic number懵了（～
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column(modifier = Modifier.onSizeChanged {

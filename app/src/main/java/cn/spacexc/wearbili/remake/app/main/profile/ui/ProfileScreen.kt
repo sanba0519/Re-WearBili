@@ -25,7 +25,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -50,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cn.spacexc.bilibilisdk.sdk.user.profile.remote.info.current.Data
+import cn.spacexc.bilibilisdk.utils.UserUtils
 import cn.spacexc.wearbili.common.domain.color.parseColor
 import cn.spacexc.wearbili.remake.R
 import cn.spacexc.wearbili.remake.app.cache.list.CacheListScreen
@@ -63,19 +62,21 @@ import cn.spacexc.wearbili.remake.app.settings.experimantal.EXPERIMENTAL_MULTI_A
 import cn.spacexc.wearbili.remake.app.settings.experimantal.getActivatedExperimentalFunctions
 import cn.spacexc.wearbili.remake.app.settings.ui.SettingsScreen
 import cn.spacexc.wearbili.remake.app.settings.user.SwitchUserScreen
+import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceScreen
 import cn.spacexc.wearbili.remake.common.UIState
 import cn.spacexc.wearbili.remake.common.ui.Card
 import cn.spacexc.wearbili.remake.common.ui.IconText
 import cn.spacexc.wearbili.remake.common.ui.OutlinedRoundButton
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.UserAvatar
 import cn.spacexc.wearbili.remake.common.ui.clickVfx
 import cn.spacexc.wearbili.remake.common.ui.isRound
-import cn.spacexc.wearbili.remake.common.ui.rotateInput
 import cn.spacexc.wearbili.remake.common.ui.shimmerPlaceHolder
 import cn.spacexc.wearbili.remake.common.ui.theme.AppTheme
 import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
 import cn.spacexc.wearbili.remake.common.ui.toOfficialVerify
+import kotlinx.coroutines.runBlocking
 
 /**
  * Created by XC-Qan on 2023/4/9.
@@ -92,14 +93,11 @@ data class ProfileScreenState(
 )
 
 @Composable
-fun ProfileScreen(
+fun TitleBackgroundScope.ProfileScreen(
     viewModel: ProfileViewModel,
     navController: NavController,
 ) {
-    if (/*runBlocking { UserUtils.isUserLoggedIn() }*/true) {
-        val focusRequester = remember {
-            FocusRequester()
-        }
+    if (runBlocking { UserUtils.isUserLoggedIn() }) {
         val localDensity = LocalDensity.current
         val configuration = LocalConfiguration.current
         val haveMultiAccount by remember {
@@ -117,26 +115,24 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(viewModel.screenState.scrollState)
-                        .rotateInput(focusRequester, viewModel.screenState.scrollState),
+                        .verticalScroll(viewModel.screenState.scrollState),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    Spacer(modifier = Modifier.height(this@ProfileScreen.titleHeight))
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickVfx(
                                 onClick = {
-                                    /*context.startActivity(
-                                        Intent(
-                                            context,
-                                            UserSpaceActivity::class.java
-                                        ).apply {
-                                            putExtra(PARAM_MID, viewModel.screenState.user?.mid)
-                                        })*/
+                                    navController.navigate(
+                                        UserSpaceScreen(
+                                            viewModel.screenState.user?.mid ?: 0L
+                                        )
+                                    )
                                 },
                                 enabled = viewModel.screenState.user?.mid != null
-                            )//.placeholder(visible = viewModel.screenState.user != null, shape = RoundedCornerShape(8.dp), highlight = PlaceholderHighlight.shimmer())
+                            )
                     ) {
                         viewModel.screenState.user.let { user ->
                             //region 个人信息
@@ -463,10 +459,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-                LaunchedEffect(key1 = Unit, block = {
-                    focusRequester.requestFocus()
-                })
-
             }
         }
     } else {

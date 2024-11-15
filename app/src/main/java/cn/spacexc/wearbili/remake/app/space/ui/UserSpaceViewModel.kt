@@ -12,11 +12,11 @@ import androidx.paging.cachedIn
 import cn.spacexc.bilibilisdk.sdk.user.profile.UserProfileInfo
 import cn.spacexc.bilibilisdk.sdk.user.profile.remote.info.space.Data
 import cn.spacexc.bilibilisdk.sdk.user.profile.remote.video.app.Item
-import cn.spacexc.wearbili.remake.common.networking.KtorNetworkUtils
 import cn.spacexc.wearbili.remake.app.main.dynamic.domain.remote.list.DynamicItem
 import cn.spacexc.wearbili.remake.app.space.ui.dynamic.domain.UserSpaceDynamicPagingSource
 import cn.spacexc.wearbili.remake.app.space.ui.videos.domain.UploaderVideosPagingSource
 import cn.spacexc.wearbili.remake.common.UIState
+import cn.spacexc.wearbili.remake.common.networking.KtorNetworkUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -30,14 +30,17 @@ class UserSpaceViewModel @Inject constructor(
     var info: Data? by mutableStateOf(null)
     var stat: cn.spacexc.bilibilisdk.sdk.user.profile.remote.stat.Data? by mutableStateOf(null)
 
+    var videoPagingItems: Flow<PagingData<Item>>? = null
+    var dynamicPagingItems: Flow<PagingData<DynamicItem>>? = null
+
     fun getUserSpace(mid: Long) {
         viewModelScope.launch {
-            val infoResponse = UserProfileInfo.getUserInfoByMid(mid)
+            /*val infoResponse = UserProfileInfo.getUserInfoByMid(mid)
             if (infoResponse.code != 0 || infoResponse.data == null) {
                 uiState = UIState.Failed(infoResponse.code)
                 return@launch
             }
-            info = infoResponse.data!!.data
+            info = infoResponse.data!!.data*/
             uiState = UIState.Success
         }
         viewModelScope.launch {
@@ -51,14 +54,18 @@ class UserSpaceViewModel @Inject constructor(
     }
 
     fun getUserVideosPagingItems(mid: Long): Flow<PagingData<Item>> {
-        return Pager(config = PagingConfig(pageSize = 1)) {
-            UploaderVideosPagingSource(mid)
-        }.flow.cachedIn(viewModelScope)
+        if (videoPagingItems == null)
+            videoPagingItems = Pager(config = PagingConfig(pageSize = 1)) {
+                UploaderVideosPagingSource(mid)
+            }.flow.cachedIn(viewModelScope)
+        return videoPagingItems!!
     }
 
     fun getUserDynamicPagingItems(mid: Long): Flow<PagingData<DynamicItem>> {
-        return Pager(config = PagingConfig(pageSize = 1)) {
-            UserSpaceDynamicPagingSource(networkUtils, mid)
-        }.flow.cachedIn(viewModelScope)
+        if (dynamicPagingItems == null)
+            dynamicPagingItems = Pager(config = PagingConfig(pageSize = 1)) {
+                UserSpaceDynamicPagingSource(networkUtils, mid)
+            }.flow.cachedIn(viewModelScope)
+        return dynamicPagingItems!!
     }
 }

@@ -27,6 +27,7 @@ import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceViewModel
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.LoadingTip
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.isRound
 import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.Flow
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.UserSpaceDynamicScreen(
+    titleBackgroundScope: TitleBackgroundScope,
     navController: NavController,
     pagingItems: Flow<PagingData<DynamicItem>>,
     viewModel: UserSpaceViewModel,
@@ -43,11 +45,14 @@ fun SharedTransitionScope.UserSpaceDynamicScreen(
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val lazyItems = pagingItems.collectAsLazyPagingItems()
-    LoadableBox(uiState = lazyItems.loadState.refresh.toUIState(), onRetry = lazyItems::retry) {
+    titleBackgroundScope.LoadableBox(
+        uiState = lazyItems.loadState.refresh.toUIState(),
+        onRetry = lazyItems::retry
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                vertical = 6.dp,
+                vertical = 6.dp + titleHeight,
                 horizontal = titleBackgroundHorizontalPadding() - 3.dp
             ),
             verticalArrangement = Arrangement.spacedBy(6.dp),

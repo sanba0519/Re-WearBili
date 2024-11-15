@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -39,6 +40,7 @@ import cn.spacexc.wearbili.remake.app.video.info.comment.domain.CommentContentDa
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.LoadingTip
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.toLoadingState
 
 /**
@@ -52,6 +54,7 @@ import cn.spacexc.wearbili.remake.common.ui.toLoadingState
 @OptIn(ExperimentalMaterialApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.CommentScreen(
+    titleBackgroundScope: TitleBackgroundScope,
     viewModel: CommentViewModel,
     commentsData: LazyPagingItems<CommentContentData>?,
     oid: Long,
@@ -60,14 +63,16 @@ fun SharedTransitionScope.CommentScreen(
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     if (commentsData != null) {
-        LoadableBox(
+        titleBackgroundScope.LoadableBox(
             uiState = commentsData.loadState.refresh.toUIState(),
             modifier = Modifier.fillMaxSize(),
             onRetry = commentsData::retry
         ) {
             if (commentsData.itemCount == 0) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(y = titleHeight / 2),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -93,6 +98,7 @@ fun SharedTransitionScope.CommentScreen(
                 )
                 Box(
                     modifier = Modifier
+                        .padding(top = titleHeight)
                         .fillMaxSize()
                         .pullRefresh(state = pullToRefreshState)
                 ) {

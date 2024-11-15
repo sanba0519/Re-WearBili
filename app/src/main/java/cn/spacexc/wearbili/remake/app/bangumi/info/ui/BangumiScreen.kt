@@ -107,7 +107,8 @@ fun SharedTransitionScope.BangumiScreen(
                         oid = bangumiInfoViewModel.getCurrentSelectedEpisode()?.aid ?: 0,
                         uploaderMid = 0L,
                         navController = navController,
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        titleBackgroundScope = this@TitleBackground
                     )
                 }
             }

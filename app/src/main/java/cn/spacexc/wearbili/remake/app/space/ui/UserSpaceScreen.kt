@@ -86,7 +86,7 @@ fun SharedTransitionScope.UserSpaceScreen(
                         navController = navController
                     )
 
-                    1 -> UserSpaceVideosScreen(
+                    1 -> this@TitleBackground.UserSpaceVideosScreen(
                         pagingItems = videoPagingItems,
                         viewModel = viewModel,
                         listState = videoListState,
@@ -98,7 +98,8 @@ fun SharedTransitionScope.UserSpaceScreen(
                         viewModel = viewModel,
                         listState = dynamicListState,
                         navController = navController,
-                        animatedVisibilityScope = animatedVisibilityScope
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        titleBackgroundScope = this@TitleBackground
                     )
                 }
             }
@@ -106,7 +107,10 @@ fun SharedTransitionScope.UserSpaceScreen(
                 pagerState = pagerState,
                 modifier = Modifier
                     .align(if (isRound()) Alignment.TopCenter else Alignment.TopEnd)
-                    .padding(end = if (isRound()) 0.dp else titleBackgroundHorizontalPadding() + 2.dp),
+                    .padding(
+                        end = if (isRound()) 0.dp else titleBackgroundHorizontalPadding() + 2.dp,
+                        top = this@TitleBackground.titleHeight
+                    ),
                 activeColor = Color(255, 255, 255),
                 inactiveColor = Color(
                     255,

@@ -16,7 +16,7 @@ data class CookieEntity(
     var name: String,
     var value: String,
     var encoding: CookieEncoding,
-    var maxAge: Int = 0,
+    var maxAge: Int? = 0,
     var expires: Long? = null,
     var domain: String? = null,
     var path: String? = null,

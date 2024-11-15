@@ -161,8 +161,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
 
-
-    /*// For media playback using ExoPlayer
+    // For media playback using ExoPlayer
     implementation(libs.androidx.media3.exoplayer)
     // For DASH playback support with ExoPlayer
     implementation(libs.androidx.media3.exoplayer.dash)
@@ -175,7 +174,7 @@ dependencies {
     // Common functionality for loading data
     implementation(libs.androidx.media3.datasource)
     // Common functionality used across multiple media libraries
-    implementation(libs.androidx.media3.common)*/
+    implementation(libs.androidx.media3.common)
     //implementation(libs.danmaku.flame.master)
 
     //implementation(libs.crashx)

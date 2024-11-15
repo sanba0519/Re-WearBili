@@ -24,12 +24,14 @@ class CrashActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val description = intent.getStringExtra(PARAM_EXCEPTION_DESCRIPTION) ?: ""
         val stacktrace = intent.getStringExtra(PARAM_EXCEPTION_STACKTRACE) ?: ""
+        viewModel.uploadLog(description, stacktrace)
         setContent {
             CrashActivityScreen(
-                stacktrace = stacktrace,
+                viewModel = viewModel
+                /*stacktrace = stacktrace,
                 description = description,
                 viewModel = viewModel,
-                context = this
+                context = this*/
             )
         }
     }

@@ -72,7 +72,7 @@ fun SharedTransitionScope.CommentRepliesDetailScreen(
                 .fillMaxSize(),
             contentPadding = PaddingValues(
                 horizontal = if (isRound()) titleBackgroundHorizontalPadding() else 4.dp,
-                vertical = 4.dp
+                vertical = 4.dp + titleHeight
             ),
             state = rememberLazyListState()
         ) {

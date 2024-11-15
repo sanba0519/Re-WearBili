@@ -24,6 +24,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.lazyRotateInput
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
 
@@ -42,6 +43,7 @@ import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
 @Composable
 fun SharedTransitionScope.DynamicScreen(
     viewModel: DynamicViewModel,
+    titleBackgroundScope: TitleBackgroundScope,
     navController: NavController,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
@@ -54,7 +56,7 @@ fun SharedTransitionScope.DynamicScreen(
         onRefresh = { dynamicListData.refresh() },
         refreshThreshold = 40.dp
     )
-    LoadableBox(
+    titleBackgroundScope.LoadableBox(
         uiState = dynamicListData.loadState.refresh.toUIState(), modifier = Modifier.fillMaxSize(),
         onRetry = dynamicListData::retry
     ) {
@@ -69,7 +71,7 @@ fun SharedTransitionScope.DynamicScreen(
                     .fillMaxSize()
                     .lazyRotateInput(focusRequester, viewModel.scrollState),
                 contentPadding = PaddingValues(
-                    vertical = 4.dp,
+                    vertical = 4.dp + this@LoadableBox.titleHeight,
                     horizontal = titleBackgroundHorizontalPadding() - 3.dp
                 )
             ) {

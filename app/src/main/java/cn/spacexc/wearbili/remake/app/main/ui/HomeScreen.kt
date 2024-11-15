@@ -217,14 +217,26 @@ fun SharedTransitionScope.HomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = if (isRound()) PaddingValues(24.dp) else PaddingValues(16.dp)
+                        contentPadding = if (isRound()) PaddingValues(
+                            start = 24.dp,
+                            end = 24.dp,
+                            top = 24.dp + titleHeight,
+                            bottom = 24.dp
+                        ) else PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 16.dp + titleHeight,
+                            bottom = 16.dp
+                        )
                     ) {
                         items(menuItems) { item ->
                             if (item.icon != null) {
                                 OutlinedRoundButton(
                                     icon = {
-                                        BiliTextIcon(icon = item.icon, modifier = Modifier.align(
-                                            Alignment.Center)
+                                        BiliTextIcon(
+                                            icon = item.icon, modifier = Modifier.align(
+                                                Alignment.Center
+                                            )
                                         )
                                     },
                                     text = item.text,
@@ -284,8 +296,10 @@ fun SharedTransitionScope.HomeScreen(
                             1 -> DynamicScreen(
                                 viewModel = dynamicViewModel,
                                 navController = navController,
-                                animatedVisibilityScope = animatedVisibilityScope
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                titleBackgroundScope = this@TitleBackground
                             )
+
                             2 -> ProfileScreen(
                                 viewModel = profileViewModel,
                                 navController = navController

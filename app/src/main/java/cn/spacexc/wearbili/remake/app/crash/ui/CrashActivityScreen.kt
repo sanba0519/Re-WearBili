@@ -1,50 +1,40 @@
 package cn.spacexc.wearbili.remake.app.crash.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Process
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.QrCode
-import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cn.spacexc.wearbili.common.copyToClipboard
+import cn.spacexc.wearbili.common.domain.qrcode.ERROR_CORRECTION_L
+import cn.spacexc.wearbili.common.domain.qrcode.QRCodeUtil
 import cn.spacexc.wearbili.remake.app.MainActivity
+import cn.spacexc.wearbili.remake.common.UIState
 import cn.spacexc.wearbili.remake.common.ui.BilibiliPink
-import cn.spacexc.wearbili.remake.common.ui.Card
-import cn.spacexc.wearbili.remake.common.ui.ClickableText
-import cn.spacexc.wearbili.remake.common.ui.TitleBackground
-import cn.spacexc.wearbili.remake.common.ui.theme.AppTheme
+import cn.spacexc.wearbili.remake.common.ui.rememberMutableInteractionSource
+import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
-import cn.spacexc.wearbili.remake.common.ui.wearBiliAnimateColorAsState
-import kotlinx.coroutines.delay
 
 
 /**
@@ -56,7 +46,7 @@ import kotlinx.coroutines.delay
  */
 
 
-//TODO implement crash screen buttons
+/*//TODO implement crash screen buttons
 @Composable
 fun Activity.CrashActivityScreen(
     stacktrace: String,
@@ -69,6 +59,7 @@ fun Activity.CrashActivityScreen(
         title = "",
         onBack = ::finish,
         onRetry = {},
+        ambientAlpha = 0f,
         uiState = viewModel.uiState
     ) {
         var currentHighlightedButton by remember {
@@ -107,7 +98,8 @@ fun Activity.CrashActivityScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(titleBackgroundHorizontalPadding() - 4.dp),
+                .padding(titleBackgroundHorizontalPadding())
+                .padding(top = titleHeight),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(text = "呜啊＞︿＜!", fontSize = 18.sp, style = AppTheme.typography.h1)
@@ -143,16 +135,16 @@ fun Activity.CrashActivityScreen(
             ) { index ->
                 annotatedString.getStringAnnotations(tag = "copy", start = index, end = index)
                     .firstOrNull()?.let {
-                    currentHighlightedButton = "copy"
-                }
+                        currentHighlightedButton = "copy"
+                    }
                 annotatedString.getStringAnnotations(tag = "qrcode", start = index, end = index)
                     .firstOrNull()?.let {
-                    currentHighlightedButton = "qrcode"
-                }
+                        currentHighlightedButton = "qrcode"
+                    }
                 annotatedString.getStringAnnotations(tag = "restart", start = index, end = index)
                     .firstOrNull()?.let {
-                    currentHighlightedButton = "restart"
-                }
+                        currentHighlightedButton = "restart"
+                    }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -201,12 +193,12 @@ fun Activity.CrashActivityScreen(
                     innerPaddingValues = PaddingValues(14.dp),
                     borderColor = restartButtonColor,
                     onClick = {
-                        /*startActivity(
+                        *//*startActivity(
                             Intent(
                                 this@CrashActivityScreen,
                                 SplashScreenActivity::class.java
                             )
-                        )*/
+                        )*//*
                         //finish()
                         //exitProcess(0)
                         finish()
@@ -232,5 +224,105 @@ fun Activity.CrashActivityScreen(
                 modifier = Modifier.alpha(0.6f)
             )
         }
+    }
+}*/
+
+@Composable
+fun Activity.CrashActivityScreen(
+    viewModel: CrashViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(titleBackgroundHorizontalPadding())
+            .background(Color.Black),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = "哎呀，一不小心崩溃啦",
+            fontFamily = wearbiliFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp,
+            color = Color.White
+        )
+        Text(
+            text = "!!!戳我重启!!!",
+            fontFamily = wearbiliFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp,
+            color = BilibiliPink,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable(rememberMutableInteractionSource(), null, onClick = {
+                finish()
+                val intent = Intent(this@CrashActivityScreen, MainActivity::class.java)
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                Process.killProcess(Process.myPid())
+            })
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .aspectRatio(1f)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .background(Color.White, RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            when (viewModel.uiState) {
+                is UIState.Loading -> {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "有一只小可爱正在收集并上传一些信息",
+                            fontFamily = wearbiliFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        LinearProgressIndicator(color = BilibiliPink)
+                    }
+                }
+
+                is UIState.Success -> {
+                    QRCodeUtil.createQRCodeBitmap(
+                        "https://wearbili.spacexc.net/issue/${viewModel.id}",
+                        512,
+                        512,
+                        ERROR_CORRECTION_L
+                    )?.asImageBitmap()?.let {
+                        Image(
+                            bitmap = it,
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(6.dp)
+                        )
+                    }
+                }
+
+                is UIState.Failed -> {
+                    Column {
+
+                    }
+                }
+            }
+        }
+        Text(
+            text = "疑难解答",
+            fontFamily = wearbiliFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 13.sp,
+            color = BilibiliPink,
+            textDecoration = TextDecoration.Underline
+        )
+        Text(
+            text = "Don't panic, c'est la vie\nwe hate bugs, but they make up features",
+            fontFamily = wearbiliFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 8.sp,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
     }
 }

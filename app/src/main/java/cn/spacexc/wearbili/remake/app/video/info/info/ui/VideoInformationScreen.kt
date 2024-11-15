@@ -81,6 +81,7 @@ import cn.spacexc.wearbili.remake.common.ui.IconText
 import cn.spacexc.wearbili.remake.common.ui.LargeUserCard
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.OutlinedRoundButton
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.VfxOutlinedRoundButton
 import cn.spacexc.wearbili.remake.common.ui.clickVfx
 import cn.spacexc.wearbili.remake.common.ui.copyable
@@ -113,7 +114,7 @@ data class VideoInformationScreenState(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun VideoBasicInformationScreen(
+fun TitleBackgroundScope.VideoBasicInformationScreen(
     state: VideoInformationScreenState,
     navController: NavController,
     videoInformationViewModel: VideoInformationViewModel,
@@ -214,7 +215,8 @@ fun VideoBasicInformationScreen(
         Column(
             modifier = Modifier
                 .verticalScroll(state.scrollState)
-                .padding(vertical = if (isRound()) 24.dp else 8.dp),
+                .padding(vertical = if (isRound()) 24.dp else 8.dp)
+                .padding(top = titleHeight),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             state.videoData?.view?.let { video ->
@@ -224,11 +226,11 @@ fun VideoBasicInformationScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(16f / 10f)
+                            .aspectRatio(16f / 9f)
                             .clip(
                                 RoundedCornerShape(8.dp)
                             ),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.FillBounds
                     )
                     Text(
                         text = video.duration.secondToTime(),

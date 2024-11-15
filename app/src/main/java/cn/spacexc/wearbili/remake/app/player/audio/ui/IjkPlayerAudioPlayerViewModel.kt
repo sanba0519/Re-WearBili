@@ -165,7 +165,7 @@ class IjkPlayerAudioPlayerViewModel /*@Inject constructor*/(
     init {
         scope.launch {
             while (true) {
-                AudioPlayerManager.heartbeat(AudioPlayerManager.AudioPlayerHeartbeat(System.currentTimeMillis()))
+                //AudioPlayerManager.heartbeat(AudioPlayerManager.AudioPlayerHeartbeat(System.currentTimeMillis()))
                 delay(500)
             }
         }

@@ -74,7 +74,8 @@ fun DeviceDiscoverScreen(
         navController = navController,
         title = "",
         onBack = navController::navigateUp,
-        onRetry = {}) {
+        onRetry = {}
+    ) {
         if (wifiName == null) {
             Text(
                 text = "需要连接Wi-Fi才能投屏哦",
