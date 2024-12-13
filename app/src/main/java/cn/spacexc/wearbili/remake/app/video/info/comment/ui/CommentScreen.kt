@@ -31,12 +31,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import cn.spacexc.wearbili.common.ifNullOrEmpty
 import cn.spacexc.wearbili.remake.R
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.CommentContentData
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.LoadingTip
@@ -55,14 +55,18 @@ import cn.spacexc.wearbili.remake.common.ui.toLoadingState
 @Composable
 fun SharedTransitionScope.CommentScreen(
     titleBackgroundScope: TitleBackgroundScope,
-    viewModel: CommentViewModel,
-    commentsData: LazyPagingItems<CommentContentData>?,
+    /* viewModel: CommentViewModel,
+     commentsData: LazyPagingItems<CommentContentData>?,*/
     oid: Long,
     uploaderMid: Long,
     navController: NavController,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    if (commentsData != null) {
+    if (oid != 0L) {
+        val viewModel = viewModel<CommentViewModel> {
+            CommentViewModel(oid.toString())
+        }
+        val commentsData = viewModel.flow.collectAsLazyPagingItems()
         titleBackgroundScope.LoadableBox(
             uiState = commentsData.loadState.refresh.toUIState(),
             modifier = Modifier.fillMaxSize(),

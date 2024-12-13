@@ -13,7 +13,6 @@ import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.exoplayer.ExoPlayer
 import bilibili.community.service.dm.v1.CommandDm
 import bilibili.community.service.dm.v1.DmSegMobileReply
 import cn.spacexc.bilibilisdk.sdk.bangumi.info.BANGUMI_ID_TYPE_CID
@@ -29,9 +28,11 @@ import cn.spacexc.wearbili.remake.app.cache.domain.database.VideoCacheFileInfo
 import cn.spacexc.wearbili.remake.app.cache.domain.database.VideoCacheRepository
 import cn.spacexc.wearbili.remake.app.player.videoplayer.danmaku.DanmakuGetter
 import cn.spacexc.wearbili.remake.app.player.videoplayer.danmaku.compose.data.DanmakuSegment
+import cn.spacexc.wearbili.remake.app.settings.SettingsManager
 import cn.spacexc.wearbili.remake.app.video.info.ui.VIDEO_TYPE_BVID
 import cn.spacexc.wearbili.remake.common.ToastUtils
 import cn.spacexc.wearbili.remake.common.networking.KtorNetworkUtils
+import cn.spacexc.wearbili.remake.proto.settings.VideoDecoder
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -66,7 +67,39 @@ class IjkVideoPlayerViewModel @Inject constructor(
 ) : ViewModel() {
     var currentVideoCid: Long = 0L
 
-    var httpPlayer = ExoPlayer.Builder(application).build()
+    var httpPlayer: IjkMediaPlayer = IjkMediaPlayer().apply {
+        setLogEnabled(true)
+        IjkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_VERBOSE)
+        setOption(
+            IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+            "user_agent",
+            "Mozilla/5.0 BiliDroid/*.*.* (bbcallen@gmail.com)"
+        ) //我服了这个user_agent要全小写下划线，谁家header这么写
+        setOption(
+            IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+            "Referer",
+            "https://www.bilibili.com/bangumi/play"
+        )
+        setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48L)  //关闭环路过滤，减轻解码压力
+        setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L)  //最大播放探测时间
+        setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1L)  //播放探测时间
+        setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)  //精确seek
+
+        if (SettingsManager.getConfiguration().videoDecoder == VideoDecoder.Hardware) {
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
+        }
+
+        if (SettingsManager.getConfiguration().isVideoLowPerformance) {
+            setOption(
+                IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+                "framedrop",
+                5
+            )  //跳帧处理,放CPU处理较慢时，进行跳帧处理，保证播放流程，画面和声音同步
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-fps", 24)  //最大fps
+        }
+    }
 
 
     var cachePlayer: IjkMediaPlayer = IjkMediaPlayer().apply {
@@ -164,9 +197,9 @@ class IjkVideoPlayerViewModel @Inject constructor(
     init {
         httpPlayer.apply {
             setOnPreparedListener {
-                if (isPaused) {
+                /*if (isPaused) {
                     it.start()
-                }
+                }*/
                 it.seekTo(videoHistoryPlayProgress)
                 startContinuouslyUpdatingSubtitle()
                 videoPlayerAspectRatio = it.videoWidth.toFloat() / it.videoHeight.toFloat()

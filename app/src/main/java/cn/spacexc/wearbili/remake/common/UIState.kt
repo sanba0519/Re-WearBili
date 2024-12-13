@@ -29,6 +29,7 @@ sealed class UIState(val errorMessage: String?) {
     }
 }
 fun LoadState.toUIState(): UIState {
+    println("toUIState: $this")
     return when (this) {
         is LoadState.Error -> {
             val code = (this.error as PagingDataLoadFailedException).code

@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.CommentContentData
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.EmoteObject
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.Meta
 import cn.spacexc.wearbili.common.ifNullOrEmpty
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.CommentContentData
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.EmoteObject
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.Meta
 import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentCard
 import cn.spacexc.wearbili.remake.common.UIState
 import cn.spacexc.wearbili.remake.common.toUIState

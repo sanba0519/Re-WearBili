@@ -33,6 +33,7 @@ import cn.spacexc.wearbili.remake.R
 import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceViewModel
 import cn.spacexc.wearbili.remake.common.ui.Card
 import cn.spacexc.wearbili.remake.common.ui.IconText
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.UserAvatar
 import cn.spacexc.wearbili.remake.common.ui.isRound
 import cn.spacexc.wearbili.remake.common.ui.shimmerPlaceHolder
@@ -42,6 +43,7 @@ import cn.spacexc.wearbili.remake.common.ui.toOfficialVerify
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.BasicInformationScreen(
+    titleBackgroundScope: TitleBackgroundScope,
     viewModel: UserSpaceViewModel,
     animatedContentScope: AnimatedContentScope,
     onShowDetailClicked: () -> Unit
@@ -50,7 +52,8 @@ fun SharedTransitionScope.BasicInformationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(top = titleBackgroundScope.titleHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {

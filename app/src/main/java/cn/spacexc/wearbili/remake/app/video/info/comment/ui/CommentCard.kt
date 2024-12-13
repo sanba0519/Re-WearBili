@@ -62,6 +62,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.CommentContentData
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.EmoteObject
 import cn.spacexc.wearbili.common.domain.time.toDateStr
 import cn.spacexc.wearbili.common.domain.video.toShortChinese
 import cn.spacexc.wearbili.remake.R
@@ -71,8 +73,6 @@ import cn.spacexc.wearbili.remake.app.image.ImageViewerScreen
 import cn.spacexc.wearbili.remake.app.search.ui.SearchScreen
 import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceScreen
 import cn.spacexc.wearbili.remake.app.video.info.comment.detail.ui.CommentRepliesDetailScreen
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.CommentContentData
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.EmoteObject
 import cn.spacexc.wearbili.remake.app.video.info.ui.VIDEO_TYPE_AID
 import cn.spacexc.wearbili.remake.app.video.info.ui.VIDEO_TYPE_BVID
 import cn.spacexc.wearbili.remake.app.video.info.ui.VideoInformationScreen

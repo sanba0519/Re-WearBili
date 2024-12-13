@@ -10,7 +10,7 @@ interface WearBiliMediaPlayer {
      * in milli second
      */
     val currentProgress: Flow<Long>
-    val currentState: Flow<>
+    val currentState: Flow<PlayerState>
 
     enum class PlayerState {
         Idle, Preparing, Buffering, Playing, Paused, Completed

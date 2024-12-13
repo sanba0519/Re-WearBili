@@ -81,7 +81,7 @@ fun SharedTransitionScope.UserSpaceScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
-                    0 -> UserInformationScreen(
+                    0 -> this@TitleBackground.UserInformationScreen(
                         viewModel = viewModel,
                         navController = navController
                     )

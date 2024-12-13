@@ -73,6 +73,7 @@ import cn.spacexc.wearbili.remake.common.ui.CardBorderWidth
 import cn.spacexc.wearbili.remake.common.ui.IconText
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.OutlinedRoundButton
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.clickAlpha
 import cn.spacexc.wearbili.remake.common.ui.theme.AppTheme
 import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
@@ -93,7 +94,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
         /*@UnstableApi*/
-fun BangumiInfoScreen(
+fun TitleBackgroundScope.BangumiInfoScreen(
     viewModel: BangumiViewModel,
     bangumiIdType: String,
     bangumiId: Long,
@@ -138,7 +139,7 @@ fun BangumiInfoScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 state = viewModel.bangumiInfoScreenScrollState,
-                contentPadding = PaddingValues(vertical = 6.dp)
+                contentPadding = PaddingValues(top = 6.dp + titleHeight, bottom = 6.dp)
             ) {
                 item {
                     Column(

@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.palette.graphics.Palette
 import cn.spacexc.wearbili.remake.app.settings.ProvideConfiguration
 import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentScreen
@@ -101,9 +100,6 @@ fun SharedTransitionScope.BangumiScreen(
                     )
 
                     1 -> CommentScreen(
-                        viewModel = bangumiCommentViewModel,
-                        commentsData = bangumiCommentViewModel.commentListFlow(bangumiInfoViewModel.getCurrentSelectedEpisode()?.aid?.toString())
-                            ?.collectAsLazyPagingItems(),
                         oid = bangumiInfoViewModel.getCurrentSelectedEpisode()?.aid ?: 0,
                         uploaderMid = 0L,
                         navController = navController,

@@ -39,6 +39,7 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -70,6 +71,8 @@ import cn.spacexc.wearbili.remake.app.link.qrcode.QrCodeScreen
 import cn.spacexc.wearbili.remake.app.player.videoplayer.defaultplayer.IjkVideoPlayerScreen
 import cn.spacexc.wearbili.remake.app.season.ui.SeasonScreen
 import cn.spacexc.wearbili.remake.app.settings.LocalConfiguration
+import cn.spacexc.wearbili.remake.app.video.action.coin.ui.CoinScreen
+import cn.spacexc.wearbili.remake.app.video.action.favourite.ui.VideoFavouriteFoldersScreen
 import cn.spacexc.wearbili.remake.app.video.info.ui.VIDEO_TYPE_BVID
 import cn.spacexc.wearbili.remake.common.ToastUtils
 import cn.spacexc.wearbili.remake.common.UIState
@@ -97,6 +100,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import like.rememberLikeButtonState
+
 
 /**
  * Created by XC-Qan on 2023/4/12.
@@ -204,6 +208,29 @@ fun TitleBackgroundScope.VideoBasicInformationScreen(
             }
         }
     })
+
+    val isFav by navController.currentBackStackEntry!!.savedStateHandle.getStateFlow(
+        "isFaved",
+        false
+    ).collectAsState()
+    val coinCount by navController.currentBackStackEntry!!.savedStateHandle.getStateFlow(
+        "isCoined",
+        0
+    ).collectAsState(0)
+
+    LaunchedEffect(key1 = isFav) {
+        if (isFav) {
+            videoInformationViewModel.isFav = true
+            ToastUtils.showText("别让我在收藏夹吃灰哦～")
+        }
+    }
+    LaunchedEffect(key1 = coinCount) {
+        if (coinCount != 0) {
+            videoInformationViewModel.isCoined = true
+            videoInformationViewModel.hasCoinedCount = coinCount
+            ToastUtils.showText("感谢投币～")
+        }
+    }
     //endregion
 
     val currentPlayer =
@@ -710,12 +737,7 @@ fun TitleBackgroundScope.VideoBasicInformationScreen(
                             modifier = Modifier.weight(1f),
                             buttonModifier = Modifier.aspectRatio(1f),
                             onClick = {
-                                /*favouriteRequestActivityLauncher.launch(Intent(
-                                    context,
-                                    VideoFavouriteFoldersActivity::class.java
-                                ).apply {
-                                    putExtra(PARAM_VIDEO_AID, video.aid)
-                                })*/
+                                navController.navigate(VideoFavouriteFoldersScreen(video.aid))
                                 false
                             },
                             outlineProgress = sanlianHitProgress / -360f,
@@ -735,15 +757,7 @@ fun TitleBackgroundScope.VideoBasicInformationScreen(
                             modifier = Modifier.weight(1f),
                             buttonModifier = Modifier.aspectRatio(1f),
                             onClick = {
-                                /*coinRequestActivityLauncher.launch(
-                                    Intent(
-                                        context,
-                                        CoinActivity::class.java
-                                    ).apply {
-                                        putExtra(PARAM_VIDEO_ID_TYPE, videoIdType)
-                                        putExtra(PARAM_VIDEO_ID, videoId)
-                                    }
-                                )*/
+                                navController.navigate(CoinScreen(VIDEO_TYPE_BVID, video.bvid))
                                 false
                             },
                             outlineProgress = sanlianHitProgress / -360f,

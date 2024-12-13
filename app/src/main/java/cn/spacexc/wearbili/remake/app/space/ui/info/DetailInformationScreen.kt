@@ -32,6 +32,7 @@ import cn.spacexc.wearbili.remake.R
 import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceViewModel
 import cn.spacexc.wearbili.remake.common.ui.OfficialVerify
 import cn.spacexc.wearbili.remake.common.ui.SmallUserCard
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 import cn.spacexc.wearbili.remake.common.ui.clickAlpha
 import cn.spacexc.wearbili.remake.common.ui.isRound
 import cn.spacexc.wearbili.remake.common.ui.theme.wearbiliFontFamily
@@ -40,7 +41,7 @@ import cn.spacexc.wearbili.remake.common.ui.toOfficialVerify
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailInformationScreen(
+fun TitleBackgroundScope.DetailInformationScreen(
     navController: NavController,
     viewModel: UserSpaceViewModel,
     animatedContentScope: AnimatedContentScope,
@@ -53,7 +54,8 @@ fun DetailInformationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(titleBackgroundHorizontalPadding() - 3.dp),
+                .padding(titleBackgroundHorizontalPadding() - 3.dp)
+                .padding(top = titleHeight),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             SmallUserCard(
@@ -84,7 +86,7 @@ fun DetailInformationScreen(
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
-            val levelCardResourceId = when (user.level) {
+            val levelCardResourceId = when (user.levelInfo.currentLevel) {
                 0 -> R.drawable.icon_lv0_card
                 1 -> R.drawable.icon_lv1_card
                 2 -> R.drawable.icon_lv2_card

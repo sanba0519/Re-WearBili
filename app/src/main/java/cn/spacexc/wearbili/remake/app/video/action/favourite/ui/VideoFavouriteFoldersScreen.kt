@@ -195,12 +195,11 @@ fun VideoFavouriteFoldersScreen(
                     innerPaddingValues = PaddingValues(12.dp),
                     shape = RoundedCornerShape(30),
                     onClick = {
-                        /*viewModel.confirmAction { isStillFavourite ->
-                            val resultIntent =
-                                Intent().apply { putExtra("isStillFavourite", isStillFavourite) }
-                            setResult(0, resultIntent)
-                            finish()
-                        }*/
+                        viewModel.confirmAction { isStillFavourite ->
+                            navController.previousBackStackEntry!!.savedStateHandle["isFav"] =
+                                isStillFavourite
+                            navController.navigateUp()
+                        }
                     }
                 ) {
                     Text(

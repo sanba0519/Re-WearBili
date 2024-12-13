@@ -22,11 +22,8 @@ class CoinViewModel : ViewModel() {
                 ToastUtils.showText(response.message ?: "投币失败了！")
                 uiState = UIState.Success
             } else {
-                /*setResult(0, Intent().apply {
-                    putExtra("isCoined", true)
-                    putExtra("coinCount", count)
-                })
-                finish()*/
+                navController.previousBackStackEntry!!.savedStateHandle["coinCount"] = count
+                navController.navigateUp()
             }
         }
     }

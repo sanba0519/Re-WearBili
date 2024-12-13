@@ -1,9 +1,9 @@
-package cn.spacexc.wearbili.remake.app.video.info.comment.domain.paging
+package cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.CommentContentData
-import cn.spacexc.wearbili.remake.app.video.info.comment.domain.VideoComment
+import cn.spacexc.bilibilisdk.sdk.video.info.VideoInfo
+import cn.spacexc.bilibilisdk.sdk.video.info.remote.comment.CommentContentData
 
 /**
  * Created by XC-Qan on 2023/4/28.
@@ -14,7 +14,6 @@ import cn.spacexc.wearbili.remake.app.video.info.comment.domain.VideoComment
  */
 
 class CommentPagingSource(
-    private val networkUtils: cn.spacexc.wearbili.remake.common.networking.KtorNetworkUtils,
     private val oid: String
 ) : PagingSource<Int, CommentContentData>() {
     override fun getRefreshKey(state: PagingState<Int, CommentContentData>): Int? {
@@ -25,7 +24,7 @@ class CommentPagingSource(
         try {
             val currentPage = params.key ?: 1
             val response =
-                networkUtils.get<VideoComment>("https://api.bilibili.com/x/v2/reply/main?type=1&sort=1&next=$currentPage&oid=$oid")
+                VideoInfo.getVideoComments(oid, currentPage)
             if (response.code != 0) return LoadResult.Error(
                 cn.spacexc.wearbili.common.exception.PagingDataLoadFailedException(
                     apiUrl = response.apiUrl,

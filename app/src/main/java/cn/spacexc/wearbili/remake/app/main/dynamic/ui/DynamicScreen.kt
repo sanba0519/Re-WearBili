@@ -13,11 +13,8 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -25,7 +22,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import cn.spacexc.wearbili.remake.common.toUIState
 import cn.spacexc.wearbili.remake.common.ui.LoadableBox
 import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
-import cn.spacexc.wearbili.remake.common.ui.lazyRotateInput
 import cn.spacexc.wearbili.remake.common.ui.titleBackgroundHorizontalPadding
 
 /**
@@ -47,9 +43,6 @@ fun SharedTransitionScope.DynamicScreen(
     navController: NavController,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    val focusRequester = remember {
-        FocusRequester()
-    }
     val dynamicListData = viewModel.dynamicFlow.collectAsLazyPagingItems()
     val pullToRefreshState = rememberPullRefreshState(
         refreshing = dynamicListData.loadState.refresh is LoadState.Loading,
@@ -60,6 +53,7 @@ fun SharedTransitionScope.DynamicScreen(
         uiState = dynamicListData.loadState.refresh.toUIState(), modifier = Modifier.fillMaxSize(),
         onRetry = dynamicListData::retry
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,8 +62,7 @@ fun SharedTransitionScope.DynamicScreen(
             LazyColumn(
                 state = viewModel.scrollState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .lazyRotateInput(focusRequester, viewModel.scrollState),
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(
                     vertical = 4.dp + this@LoadableBox.titleHeight,
                     horizontal = titleBackgroundHorizontalPadding() - 3.dp
@@ -85,9 +78,6 @@ fun SharedTransitionScope.DynamicScreen(
                     }
                 }
             }
-            LaunchedEffect(key1 = Unit, block = {
-                focusRequester.requestFocus()
-            })
             PullRefreshIndicator(
                 refreshing = dynamicListData.loadState.refresh is LoadState.Loading,
                 state = pullToRefreshState,

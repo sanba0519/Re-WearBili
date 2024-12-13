@@ -9,8 +9,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import cn.spacexc.bilibilisdk.sdk.user.card.Card
 import cn.spacexc.bilibilisdk.sdk.user.profile.UserProfileInfo
-import cn.spacexc.bilibilisdk.sdk.user.profile.remote.info.space.Data
 import cn.spacexc.bilibilisdk.sdk.user.profile.remote.video.app.Item
 import cn.spacexc.wearbili.remake.app.main.dynamic.domain.remote.list.DynamicItem
 import cn.spacexc.wearbili.remake.app.space.ui.dynamic.domain.UserSpaceDynamicPagingSource
@@ -27,7 +27,7 @@ class UserSpaceViewModel @Inject constructor(
     val networkUtils: KtorNetworkUtils
 ) : ViewModel() {
     var uiState: UIState by mutableStateOf(UIState.Loading)
-    var info: Data? by mutableStateOf(null)
+    var info: Card? by mutableStateOf(null)
     var stat: cn.spacexc.bilibilisdk.sdk.user.profile.remote.stat.Data? by mutableStateOf(null)
 
     var videoPagingItems: Flow<PagingData<Item>>? = null
@@ -35,12 +35,12 @@ class UserSpaceViewModel @Inject constructor(
 
     fun getUserSpace(mid: Long) {
         viewModelScope.launch {
-            /*val infoResponse = UserProfileInfo.getUserInfoByMid(mid)
+            val infoResponse = UserProfileInfo.getUserCardByMid(mid)
             if (infoResponse.code != 0 || infoResponse.data == null) {
                 uiState = UIState.Failed(infoResponse.code)
                 return@launch
             }
-            info = infoResponse.data!!.data*/
+            info = infoResponse.data!!.data.card
             uiState = UIState.Success
         }
         viewModelScope.launch {

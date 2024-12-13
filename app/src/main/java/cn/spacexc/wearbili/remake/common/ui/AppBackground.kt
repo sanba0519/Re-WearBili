@@ -2,7 +2,6 @@ package cn.spacexc.wearbili.remake.common.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -13,16 +12,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -44,7 +39,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,10 +48,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -81,9 +73,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import cn.spacexc.wearbili.remake.R
-import cn.spacexc.wearbili.remake.app.isAudioServiceUp
 import cn.spacexc.wearbili.remake.app.player.audio.AudioPlayerManager
-import cn.spacexc.wearbili.remake.app.player.audio.ui.AudioPlayerScreen
 import cn.spacexc.wearbili.remake.app.settings.LocalConfiguration
 import cn.spacexc.wearbili.remake.app.settings.ProvideConfiguration
 import cn.spacexc.wearbili.remake.common.ToastUtils
@@ -164,8 +154,8 @@ fun CirclesBackground(
                     modifier = modifier
                         .fillMaxSize()
                         .background(backgroundColor)
-                        .onGloballyPositioned {
-                            boxWidth = with(localDensity) { it.size.width.toDp() }
+                        .onSizeChanged {
+                            boxWidth = with(localDensity) { it.width.toDp() }
                         }) {
                     WearBiliAnimatedVisibility(
                         visible = isShowing,
@@ -425,6 +415,7 @@ fun TitleBackgroundScope.LoadableBox(
         label = ""
     )
     Box(modifier = modifier.fillMaxSize()) {
+        Text(text = uiState.toString(), color = Color.White)
         Crossfade(targetState = uiState, label = "AppBackgroundLoadableBox") {
             when (it) {
                 is UIState.Loading -> {
@@ -478,6 +469,7 @@ fun TitleBackgroundScope.LoadableBox(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
+                                .offset(y = this@LoadableBox.titleHeight / -2)
                                 .clickVfx(onLongClick = onLongClick, onClick = onRetry)
                         ) {
                             Image(
@@ -567,21 +559,22 @@ fun TitleBackground(
                             ),
                             blendMode = BlendMode.DstIn,
                         )
-                        //drawContent()
                     }
             ) {
                 val titleBackgroundScope =
-                    object : TitleScope, BoxScope by this, TitleBackgroundScope {
-                        override val titleHeight: Dp
-                            get() = titleHeight
+                    remember(titleHeight) {
+                        object : TitleScope, BoxScope by this, TitleBackgroundScope {
+                            override val titleHeight: Dp
+                                get() = titleHeight
+                        }
                     }
 
                 titleBackgroundScope.content()
             }
-            Row(
+            /*Row(
                 modifier = Modifier
                     .onSizeChanged {
-                        titleHeight = with(localDensity) { it.height.toDp() }
+                        //titleHeight = with(localDensity) { it.height.toDp() }
                     }
                     .graphicsLayer {
                         compositingStrategy =
@@ -716,7 +709,7 @@ fun TitleBackground(
                 }
 
                 if (!isRound()) {
-                    /*Spacer(modifier = Modifier.weight(1f))*/
+                    Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = buildAnnotatedString {
                             if (isAudioServiceUp) {
@@ -736,14 +729,14 @@ fun TitleBackground(
                                         )
                                     )
                                 }
-                                /*startActivity(
+                                *//*startActivity(
                                     Intent(
                                         this@TitleBackground,
                                         AudioPlayerActivity::class.java
                                     ).apply {
                                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                     }
-                                )*/
+                                )*//*
                             }
                             .then(
                                 if (isAudioServiceUp) {
@@ -782,7 +775,7 @@ fun TitleBackground(
                         )
                     )
                 }
-            }
+            }*/
         }
     }
 }

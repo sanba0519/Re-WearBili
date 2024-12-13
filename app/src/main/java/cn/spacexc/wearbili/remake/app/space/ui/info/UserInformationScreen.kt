@@ -13,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import cn.spacexc.wearbili.remake.app.space.ui.UserSpaceViewModel
+import cn.spacexc.wearbili.remake.common.ui.TitleBackgroundScope
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun UserInformationScreen(
+fun TitleBackgroundScope.UserInformationScreen(
     navController: NavController,
     viewModel: UserSpaceViewModel = hiltViewModel()
 ) {
@@ -39,7 +40,11 @@ fun UserInformationScreen(
                     isShowingDetail = false
                 }
             } else {
-                BasicInformationScreen(viewModel = viewModel, animatedContentScope = this) {
+                BasicInformationScreen(
+                    viewModel = viewModel,
+                    animatedContentScope = this,
+                    titleBackgroundScope = this@UserInformationScreen
+                ) {
                     isShowingDetail = true
                 }
             }

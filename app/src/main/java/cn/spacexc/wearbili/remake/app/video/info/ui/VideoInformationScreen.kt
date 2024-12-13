@@ -9,10 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import cn.spacexc.wearbili.remake.app.player.videoplayer.defaultplayer.IjkVideoPlayerViewModel
 import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentScreen
-import cn.spacexc.wearbili.remake.app.video.info.comment.ui.CommentViewModel
 import cn.spacexc.wearbili.remake.app.video.info.info.ui.VideoBasicInformationScreen
 import cn.spacexc.wearbili.remake.app.video.info.info.ui.VideoInformationViewModel
 import cn.spacexc.wearbili.remake.app.video.info.related.RelatedVideosScreen
@@ -46,7 +44,7 @@ fun SharedTransitionScope.VideoInformationScreen(
     ijkVideoPlayerViewModel: IjkVideoPlayerViewModel,
     navController: NavController,
     videoInformationViewModel: VideoInformationViewModel = hiltViewModel(),
-    commentViewModel: CommentViewModel = hiltViewModel(),
+    //commentViewModel: CommentViewModel = hiltViewModel(),
     videoIdType: String,
     videoId: String,
     animatedVisibilityScope: AnimatedVisibilityScope
@@ -130,10 +128,10 @@ fun SharedTransitionScope.VideoInformationScreen(
 
                 1 -> {
                     CommentScreen(
-                        viewModel = commentViewModel,
+                        /*viewModel = commentViewModel,
                         commentsData = commentViewModel.commentListFlow(
                             videoInformationViewModel.state.videoData?.view?.aid?.toString() ?: ""
-                        )?.collectAsLazyPagingItems(),
+                        )?.collectAsLazyPagingItems(),*/
                         oid = videoInformationViewModel.state.videoData?.view?.aid ?: 0,
                         uploaderMid = videoInformationViewModel.state.videoData?.view?.owner?.mid
                             ?: 0,

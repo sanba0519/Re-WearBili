@@ -281,7 +281,7 @@ fun SharedTransitionScope.HomeScreen(
                         state = pagerState
                     ) {
                         when (it) {
-                            0 -> RecommendScreen(
+                            1 -> RecommendScreen(
                                 viewModel = recommendViewModel,
                                 navController = navController,
                                 updatesResult = updateInfo,
@@ -293,7 +293,7 @@ fun SharedTransitionScope.HomeScreen(
                                 }
                             )
 
-                            1 -> DynamicScreen(
+                            0 -> DynamicScreen(
                                 viewModel = dynamicViewModel,
                                 navController = navController,
                                 animatedVisibilityScope = animatedVisibilityScope,
